@@ -4,6 +4,7 @@ import random
 import requests
 import time
 import uuid
+from typing import Optional, Type, List
 
 from cached_property import cached_property
 from copy import deepcopy
@@ -424,6 +425,112 @@ class Block(Record):
                 target_block.get("parent_id"),
             ]
         )
+
+    def get_children_with_titles(self, titles: Optional[List[str]] = None) -> List[Type[Block]]:
+        """Returns the child Blocks that have title attributes.
+
+        Parameters
+        ----------
+        titles : list[str], optional
+            Retain only the children whose titles are found in this list.
+
+        Returns
+        -------
+        list[type[block]]
+
+        """
+        children = []
+        for child in self.children:
+            if hasattr(child, 'title'):
+                if titles is None or child.title in titles:
+                    children.append(child)
+
+        return children
+
+    @property
+    def child_titles(self) -> List[str]:
+        """list[str]: The titles of the child Blocks with titles."""
+        return [i.title for i in self.get_children_with_titles()]
+
+    def get_children_of_type(self, block_types: List[str]) -> List[Type[Block]]:
+        """Returns the child Blocks that match the Block type.
+
+        Parameters
+        ----------
+        block_types : list[str]
+            The child Block types (as found when calling obj.type on the children).
+
+        Returns
+        -------
+        list[type[Block]]
+
+        """
+        children = []
+        for child in self.children:
+            if child.type in block_types:
+                children.append(child)
+
+        return children
+
+    def get_children(self,
+                     block_types: Optional[List[str]] = None,
+                     titles: Optional[List[str]] = None) -> List[Type[Block]]:
+        """Returns the children that match the title/Block type combination.
+
+        Parameters
+        ----------
+        block_types : list[str], optional
+            The Block type constraints.
+        titles : list[str], optional
+            The title constraints.
+
+        Returns
+        -------
+        list[type[Block]]
+
+        """
+        children = []
+
+        if block_types is not None:
+            children = self.get_children_of_type(block_types)
+
+        if len(children) > 0:
+            if titles is not None:
+                return [i for i in children if i.title in titles]
+            else:
+                return children
+
+        return self.get_children_with_titles(titles)
+
+    def purge(self,
+              block_types: Optional[List[str]] = None,
+              titles: Optional[str] = None,
+              first: bool = False,
+              last: bool = False) -> None:
+        """Batch remove child Blocks.
+
+        Parameters
+        ----------
+        block_types : list[str], optional
+            The Block type constraints.
+        titles : list[str], optional
+            The title constraints.
+        first : bool
+            Remove only the first matching child Block. Defaults to False.
+        last : bool
+            Remove only the last matching child Block. Defaults to False.
+
+        """
+        children = self.get_children(block_types, titles)
+
+        if first:
+            children[0].remove()
+
+        elif last:
+            children[-1].remove()
+
+        else:
+            [child.remove() for child in children]
 
 
 class DividerBlock(Block):
