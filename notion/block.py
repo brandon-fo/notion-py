@@ -426,7 +426,7 @@ class Block(Record):
             ]
         )
 
-    def get_children_with_titles(self, titles: Optional[List[str]] = None) -> List[Type[Block]]:
+    def get_children_with_titles(self, titles: Optional[List[str]] = None) -> list:
         """Returns the child Blocks that have title attributes.
 
         Parameters
@@ -436,7 +436,7 @@ class Block(Record):
 
         Returns
         -------
-        list[type[block]]
+        list
 
         """
         children = []
@@ -452,7 +452,7 @@ class Block(Record):
         """list[str]: The titles of the child Blocks with titles."""
         return [i.title for i in self.get_children_with_titles()]
 
-    def get_children_of_type(self, block_types: List[str]) -> List[Type[Block]]:
+    def get_children_of_type(self, block_types: List[str]) -> list:
         """Returns the child Blocks that match the Block type.
 
         Parameters
@@ -462,7 +462,7 @@ class Block(Record):
 
         Returns
         -------
-        list[type[Block]]
+        list
 
         """
         children = []
@@ -474,7 +474,7 @@ class Block(Record):
 
     def get_children(self,
                      block_types: Optional[List[str]] = None,
-                     titles: Optional[List[str]] = None) -> List[Type[Block]]:
+                     titles: Optional[List[str]] = None) -> list:
         """Returns the children that match the title/Block type combination.
 
         Parameters
@@ -486,7 +486,7 @@ class Block(Record):
 
         Returns
         -------
-        list[type[Block]]
+        list
 
         """
         children = []
