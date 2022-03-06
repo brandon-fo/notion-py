@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from getpass import getpass
+from typing import Union, Type
 
 from .block import Block, BLOCK_TYPES
 from .collection import (
@@ -157,6 +158,23 @@ class NotionClient(object):
     def get_top_level_pages(self):
         records = self._update_user_info()
         return [self.get_block(bid) for bid in records["block"].keys()]
+
+    def get_top_level_page(self, title: str) -> Union[Type[Block], None]:
+        """Get the top-level page from the WORKSPACE section.
+
+        Parameters
+        ----------
+        title : str
+            The page title.
+
+        Returns
+        -------
+        PageBlock or subclass
+
+        """
+        for page in self.get_top_level_pages():
+            if page.title == title:
+                return page
 
     def get_record_data(self, table, id, force_refresh=False):
         return self._store.get(table, id, force_refresh=force_refresh)
