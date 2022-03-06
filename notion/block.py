@@ -458,7 +458,7 @@ class Block(Record):
         Parameters
         ----------
         block_types : list[str]
-            The child Block types (as found when calling obj.type on the children).
+            The child Block types (see notion.block.BLOCK_TYPES).
 
         Returns
         -------
