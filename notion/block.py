@@ -500,7 +500,10 @@ class Block(Record):
             else:
                 return children
 
-        return self.get_children_with_titles(titles)
+        if titles is not None:
+            return self.get_children_with_titles(titles)
+
+        return self.children
 
     def purge(self,
               block_types: Optional[List[str]] = None,
