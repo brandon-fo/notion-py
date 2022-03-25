@@ -165,6 +165,10 @@ class Children(object):
 
         return self._get_block(block.id)
 
+    def add_new_with_divider(self, block_type, title):
+        """Add the textual Block followed by a DividerBlock."""
+        self.add_new(block_type, title=title)
+        self.add_new(DividerBlock)
 
 class Block(Record):
     """
