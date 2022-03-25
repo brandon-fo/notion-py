@@ -165,10 +165,28 @@ class Children(object):
 
         return self._get_block(block.id)
 
-    def add_new_with_divider(self, block_type, title):
+    def add_with_divider(self, block_type, title):
         """Add the textual Block followed by a DividerBlock."""
         self.add_new(block_type, title=title)
         self.add_new(DividerBlock)
+
+    def add_all(self, **kwargs):
+        """Batch add the Blocks.
+
+        Parameters
+        ----------
+        kwargs : dict[str, Block subclass]
+            Represents a mapping between a Block's title and the Block type. If the Block type is not textual, the title
+            should be an emptry string.
+
+        """
+        for title, block_type in kwargs.items():
+            if title == '':
+                self.add_new(block_type)
+                continue
+
+            self.add_new(block_type, title=title)
+
 
 class Block(Record):
     """
